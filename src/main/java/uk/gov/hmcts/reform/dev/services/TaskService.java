@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.dev.services;
 
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.dev.dto.CreateTaskRequestDTO;
-import uk.gov.hmcts.reform.dev.dto.TaskResponseDTO;
+import uk.gov.hmcts.reform.dev.dto.CreateTaskRequest;
+import uk.gov.hmcts.reform.dev.dto.TaskResponse;
 import uk.gov.hmcts.reform.dev.excpetions.TaskNotFoundException;
 import uk.gov.hmcts.reform.dev.models.Task;
 import uk.gov.hmcts.reform.dev.models.TaskRepository;
@@ -19,15 +19,15 @@ public class TaskService {
         this.taskRepository = repository;
     }
 
-    public TaskResponseDTO createTask(CreateTaskRequestDTO createTaskRequestDTO) {
+    public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
 
-        Task task = mapCreateTaskRequestToTask(createTaskRequestDTO);
+        Task task = mapCreateTaskRequestToTask(createTaskRequest);
         task = taskRepository.save(task);
 
         return mapTaskToResponseDTO(task);
     }
 
-    public TaskResponseDTO retrieveTask(Long id) throws TaskNotFoundException {
+    public TaskResponse retrieveTask(Long id) throws TaskNotFoundException {
 
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new TaskNotFoundException(String.format("No task found with ID: %d", id)));
@@ -35,7 +35,7 @@ public class TaskService {
         return mapTaskToResponseDTO(task);
     }
 
-    public TaskResponseDTO updateTaskStatus(long id, String newStatus) throws TaskNotFoundException {
+    public TaskResponse updateTaskStatus(long id, String newStatus) throws TaskNotFoundException {
 
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new TaskNotFoundException(String.format("No task found with ID: %d", id)));
@@ -46,13 +46,13 @@ public class TaskService {
         return mapTaskToResponseDTO(task);
     }
 
-    public List<TaskResponseDTO> retrieveAllTasks() {
+    public List<TaskResponse> retrieveAllTasks() {
         List<Task> tasks = taskRepository.findAll();
-        List<TaskResponseDTO> responses = new ArrayList<>();
+        List<TaskResponse> responses = new ArrayList<>();
 
         for (Task task : tasks) {
-            TaskResponseDTO taskResponseDTO = mapTaskToResponseDTO(task);
-            responses.add(taskResponseDTO);
+            TaskResponse taskResponse = mapTaskToResponseDTO(task);
+            responses.add(taskResponse);
         }
 
         return responses;
@@ -66,8 +66,8 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    private TaskResponseDTO mapTaskToResponseDTO(Task task) {
-        return TaskResponseDTO.builder()
+    private TaskResponse mapTaskToResponseDTO(Task task) {
+        return TaskResponse.builder()
             .id(task.getId())
             .title(task.getTitle())
             .description(task.getDescription())
@@ -76,12 +76,12 @@ public class TaskService {
             .build();
     }
 
-    private Task mapCreateTaskRequestToTask(CreateTaskRequestDTO createTaskRequestDTO) {
+    private Task mapCreateTaskRequestToTask(CreateTaskRequest createTaskRequest) {
         return Task.builder()
-            .title(createTaskRequestDTO .getTitle())
-            .description(createTaskRequestDTO.getDescription())
-            .status(createTaskRequestDTO.getStatus())
-            .dueDate(createTaskRequestDTO.getDueDateTime()).build();
+            .title(createTaskRequest.getTitle())
+            .description(createTaskRequest.getDescription())
+            .status(createTaskRequest.getStatus())
+            .dueDate(createTaskRequest.getDueDateTime()).build();
     }
 
 }

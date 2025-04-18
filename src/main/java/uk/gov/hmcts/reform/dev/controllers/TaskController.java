@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.dev.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.gov.hmcts.reform.dev.dto.CreateTaskRequestDTO;
-import uk.gov.hmcts.reform.dev.dto.TaskResponseDTO;
+import uk.gov.hmcts.reform.dev.dto.CreateTaskRequest;
+import uk.gov.hmcts.reform.dev.dto.TaskResponse;
 import uk.gov.hmcts.reform.dev.excpetions.TaskNotFoundException;
 import uk.gov.hmcts.reform.dev.services.TaskService;
 
@@ -23,25 +23,17 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Long> createTask(String title, String description, String status, LocalDateTime dueDateTime) {
+    public ResponseEntity<TaskResponse> createTask(@RequestBody @Valid CreateTaskRequest createTaskRequest) {
 
-        CreateTaskRequestDTO createRequest = CreateTaskRequestDTO.builder()
-            .title(title)
-            .description(description)
-            .status(status)
-            .dueDateTime(dueDateTime).build();
+        TaskResponse response = taskService.createTask(createTaskRequest);
 
-        TaskResponseDTO response = taskService.createTask(createRequest);
-
-        return ResponseEntity.ok(response.id);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateTaskStatus(@PathVariable long id, String status) {
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable long id, String status) {
 
-        TaskResponseDTO response;
+        TaskResponse response;
 
         try {
             response = taskService.updateTaskStatus(id, status);
@@ -49,13 +41,13 @@ public class TaskController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/retrieveTask/{id}")
-    public ResponseEntity<TaskResponseDTO> retrieveTaskById(@PathVariable long id) {
+    public ResponseEntity<TaskResponse> retrieveTaskById(@PathVariable long id) {
 
-        TaskResponseDTO response;
+        TaskResponse response;
 
         try {
             response = taskService.retrieveTask(id);
@@ -67,14 +59,13 @@ public class TaskController {
     }
 
     @GetMapping("/retrieveAllTasks")
-    public ResponseEntity<List<TaskResponseDTO>> retrieveAllTasks() {
+    public ResponseEntity<List<TaskResponse>> retrieveAllTasks() {
 
-        List<TaskResponseDTO> response = taskService.retrieveAllTasks();
+        List<TaskResponse> response = taskService.retrieveAllTasks();
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> deleteTask(@PathVariable long id) {
 
         try {

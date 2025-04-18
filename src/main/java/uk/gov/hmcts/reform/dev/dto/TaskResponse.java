@@ -1,16 +1,14 @@
 package uk.gov.hmcts.reform.dev.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class TaskResponseDTO {
+public class TaskResponse {
 
     public long id;
 
