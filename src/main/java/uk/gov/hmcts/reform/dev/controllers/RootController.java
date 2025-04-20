@@ -11,6 +11,6 @@ public class RootController {
 
     @GetMapping("/")
     public ResponseEntity<String> welcome() {
-        return ok("Welcome to test-backend");
+        return ok("Welcome to task-backend");
     }
 }
