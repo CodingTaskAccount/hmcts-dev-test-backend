@@ -72,7 +72,7 @@ public class TaskService {
             .title(task.getTitle())
             .description(task.getDescription())
             .status(task.getStatus())
-            .dueDateTime(task.getDueDate())
+            .dueDateTime(task.getDueDateTime())
             .build();
     }
 
@@ -81,7 +81,7 @@ public class TaskService {
             .title(createTaskRequest.getTitle())
             .description(createTaskRequest.getDescription())
             .status(createTaskRequest.getStatus())
-            .dueDate(createTaskRequest.getDueDateTime()).build();
+            .dueDateTime(createTaskRequest.getDueDateTime()).build();
     }
 
 }

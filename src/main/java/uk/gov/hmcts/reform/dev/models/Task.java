@@ -30,5 +30,5 @@ public class Task {
     private String status;
 
     @Column(nullable = false)
-    private LocalDateTime dueDate;
+    private LocalDateTime dueDateTime;
 }
