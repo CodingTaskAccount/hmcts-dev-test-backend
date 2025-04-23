@@ -36,7 +36,7 @@ class DeleteFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         Response created = given()
             .contentType(ContentType.JSON)
@@ -88,7 +88,7 @@ class DeleteFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         Response created = given()
             .contentType(ContentType.JSON)

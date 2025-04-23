@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.request;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -36,7 +35,7 @@ class RetrieveFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         Response created = given()
             .contentType(ContentType.JSON)
@@ -64,7 +63,7 @@ class RetrieveFunctionalTest {
     }
 
     @Test
-    void retrieve_InvalidIdShouldReturnNotFound() {
+    void retrieve_invalidIdShouldReturnNotFound() {
 
         String requestJSON = """
         {
@@ -73,7 +72,7 @@ class RetrieveFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         Response created = given()
             .contentType(ContentType.JSON)
@@ -87,7 +86,7 @@ class RetrieveFunctionalTest {
         // Test with a valid ID first to ensure the endpoint is working
         long id = created.jsonPath().getLong("id");
 
-        Response retrieved = given()
+        given()
             .pathParam("id", id)
             .when()
             .get("/retrieveTask/{id}")
@@ -115,7 +114,7 @@ class RetrieveFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         String requestJSONTwo = """
         {
@@ -124,7 +123,7 @@ class RetrieveFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         given()
             .contentType(ContentType.JSON)

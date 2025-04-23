@@ -33,7 +33,7 @@ class CreateFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         given()
             .contentType(ContentType.JSON)
@@ -57,7 +57,7 @@ class CreateFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         given()
             .contentType(ContentType.JSON)
@@ -80,7 +80,7 @@ class CreateFunctionalTest {
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
         }
-    """;
+        """;
 
         given()
             .contentType(ContentType.JSON)
