@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.dev.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,11 +26,11 @@ public class TaskControllerTest
     @Autowired
     private TaskController underTest;
 
-    long id;
-    String title;
-    String description;
-    String status;
-    LocalDateTime dueDateTime;
+    private long id;
+    private String title;
+    private String description;
+    private String status;
+    private LocalDateTime dueDateTime;
 
     private TaskResponse testResponse;
 
@@ -70,6 +70,7 @@ public class TaskControllerTest
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(testResponse, response.getBody());
+        verify(taskService).createTask(testRequest);
     }
 
     @Test
@@ -81,6 +82,7 @@ public class TaskControllerTest
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(testResponse, response.getBody());
+        verify(taskService).updateTaskStatus(id, status);
     }
 
     @Test
@@ -92,6 +94,7 @@ public class TaskControllerTest
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(testResponse, response.getBody());
+        verify(taskService).retrieveTask(id);
     }
 
     @Test
@@ -107,6 +110,7 @@ public class TaskControllerTest
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(exampleResponses, response.getBody());
+        verify(taskService).retrieveAllTasks();
     }
 
     @Test
@@ -116,6 +120,7 @@ public class TaskControllerTest
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(id, response.getBody());
+        verify(taskService).deleteTask(id);
     }
 
     @Test
@@ -126,6 +131,7 @@ public class TaskControllerTest
         ResponseEntity<TaskResponse> response = underTest.updateTaskStatus(id, status);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(taskService).updateTaskStatus(id, status);
     }
 
     @Test
@@ -136,6 +142,7 @@ public class TaskControllerTest
         ResponseEntity<TaskResponse> response = underTest.retrieveTaskById(id);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(taskService).retrieveTask(id);
     }
 
     @Test
@@ -148,6 +155,7 @@ public class TaskControllerTest
         ResponseEntity<Long> response = underTest.deleteTask(id);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(taskService).deleteTask(id);
     }
 
 }

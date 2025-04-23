@@ -3,16 +3,21 @@ package uk.gov.hmcts.reform.dev.controllers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchTaskExecutor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.dev.dto.CreateTaskRequest;
 import uk.gov.hmcts.reform.dev.dto.TaskResponse;
+import uk.gov.hmcts.reform.dev.excpetions.TaskNotFoundException;
 import uk.gov.hmcts.reform.dev.models.Task;
 import uk.gov.hmcts.reform.dev.models.TaskRepository;
 import uk.gov.hmcts.reform.dev.services.TaskService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -29,11 +34,11 @@ public class TaskServiceTest {
     @MockitoBean
     private TaskRepository taskRepository;
 
-    long id;
-    String title;
-    String description;
-    String status;
-    LocalDateTime dueDateTime;
+    private long id;
+    private String title;
+    private String description;
+    private String status;
+    private LocalDateTime dueDateTime;
 
     private TaskResponse testResponse;
 
@@ -64,7 +69,7 @@ public class TaskServiceTest {
             .dueDateTime(dueDateTime)
             .build();
 
-        Task task = Task.builder()
+        Task createdTask = Task.builder()
             .id(id)
             .title(createTaskRequest.getTitle())
             .description(createTaskRequest.getDescription())
@@ -72,10 +77,22 @@ public class TaskServiceTest {
             .dueDateTime(createTaskRequest.getDueDateTime())
             .build();
 
-        when(taskRepository.save(any())).thenReturn(task);
+        when(taskRepository.save(argThat(
+                task -> task.getTitle().equals(title) &&
+                task.getDescription().equals(description) &&
+                task.getStatus() == status &&
+                task.getDueDateTime().equals(dueDateTime)
+        ))).thenReturn(createdTask);
 
         TaskResponse response = underTest.createTask(createTaskRequest);
+
         assertEquals(testResponse, response);
+        verify(taskRepository).save(argThat(
+            task -> task.getTitle().equals(title) &&
+            task.getDescription().equals(description) &&
+            task.getStatus() == status &&
+            task.getDueDateTime().equals(dueDateTime)
+        ));
     }
 
     @Test
@@ -93,6 +110,7 @@ public class TaskServiceTest {
 
         TaskResponse response = underTest.retrieveTask(id);
         assertEquals(testResponse, response);
+        verify(taskRepository).findById(id);
     }
 
     @Test
@@ -111,6 +129,8 @@ public class TaskServiceTest {
 
         TaskResponse response = underTest.updateTaskStatus(id, status);
         assertEquals(testResponse, response);
+        verify(taskRepository).findById(id);
+        verify(taskRepository).save(task);
     }
 
     @Test
@@ -131,6 +151,35 @@ public class TaskServiceTest {
 
         List<TaskResponse> response = underTest.retrieveAllTasks();
         assertEquals(testResponse, response.getFirst());
+        verify(taskRepository).findAll();
+    }
+
+    @Test
+    void deleteTask_ShouldCallRepositoryDelete() {
+
+        Task task = Task.builder()
+            .id(id)
+            .title(title)
+            .description(description)
+            .status(status)
+            .dueDateTime(dueDateTime)
+            .build();
+
+        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
+
+        underTest.deleteTask(id);
+        verify(taskRepository).delete(task);
+    }
+
+    @Test
+    void deleteTask_InvalidIdShouldThrowTaskNotFoundException() throws Exception {
+
+        when(taskRepository.findById(id)).thenThrow(new TaskNotFoundException("Task Not Found"));
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            underTest.deleteTask(id);
+        });
+
     }
 
 }
