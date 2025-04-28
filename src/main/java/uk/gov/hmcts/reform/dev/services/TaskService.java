@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.dev.excpetions.TaskNotFoundException;
 import uk.gov.hmcts.reform.dev.models.Task;
 import uk.gov.hmcts.reform.dev.models.TaskRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class TaskService {
     public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
 
         Task task = mapCreateTaskRequestToTask(createTaskRequest);
+        task.setCreatedDate(LocalDate.now());
         task = taskRepository.save(task);
 
         return mapTaskToResponseDTO(task);
@@ -69,15 +71,18 @@ public class TaskService {
     private TaskResponse mapTaskToResponseDTO(Task task) {
         return TaskResponse.builder()
             .id(task.getId())
+            .caseNumber(task.getCaseNumber())
             .title(task.getTitle())
             .description(task.getDescription())
             .status(task.getStatus())
+            .createdDate(task.getCreatedDate())
             .dueDateTime(task.getDueDateTime())
             .build();
     }
 
     private Task mapCreateTaskRequestToTask(CreateTaskRequest createTaskRequest) {
         return Task.builder()
+            .caseNumber(createTaskRequest.getCaseNumber())
             .title(createTaskRequest.getTitle())
             .description(createTaskRequest.getDescription())
             .status(createTaskRequest.getStatus())

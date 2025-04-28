@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
+
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.request;
 import static org.hamcrest.Matchers.greaterThan;
@@ -19,10 +21,14 @@ class RetrieveFunctionalTest {
     @Value("${TEST_URL:http://localhost:4000}")
     private String testUrl;
 
+    private LocalDate dateToday;
+
     @BeforeEach
     public void setUp() {
         RestAssured.baseURI = testUrl;
         RestAssured.useRelaxedHTTPSValidation();
+
+        dateToday = LocalDate.now();
     }
 
     @Test
@@ -31,6 +37,7 @@ class RetrieveFunctionalTest {
         String requestJSON = """
         {
             "title": "title",
+            "caseNumber": 100,
             "description": "description",
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
@@ -57,8 +64,10 @@ class RetrieveFunctionalTest {
             .extract().response();
 
         Assertions.assertEquals("title", retrieved.jsonPath().getString("title"));
+        Assertions.assertEquals(100, retrieved.jsonPath().getLong("caseNumber"));
         Assertions.assertEquals("description", retrieved.jsonPath().getString("description"));
         Assertions.assertEquals("status", retrieved.jsonPath().getString("status"));
+        Assertions.assertEquals(dateToday.toString(), retrieved.jsonPath().getString("createdDate"));
         Assertions.assertEquals("2025-04-30T12:00:00", retrieved.jsonPath().getString("dueDateTime"));
     }
 
@@ -68,6 +77,7 @@ class RetrieveFunctionalTest {
         String requestJSON = """
         {
             "title": "title",
+            "caseNumber": 100,
             "description": "description",
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
@@ -110,6 +120,7 @@ class RetrieveFunctionalTest {
         String requestJSONOne = """
         {
             "title": " title one",
+            "caseNumber": 100,
             "description": "description",
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
@@ -119,6 +130,7 @@ class RetrieveFunctionalTest {
         String requestJSONTwo = """
         {
             "title": " title two",
+            "caseNumber": 200,
             "description": "description",
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"

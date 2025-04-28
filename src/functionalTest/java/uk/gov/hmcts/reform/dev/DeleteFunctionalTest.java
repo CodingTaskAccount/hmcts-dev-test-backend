@@ -32,6 +32,7 @@ class DeleteFunctionalTest {
         String requestJSON = """
         {
             "title": "title",
+            "caseNumber": 100,
             "description": "description",
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"
@@ -84,6 +85,7 @@ class DeleteFunctionalTest {
         String requestJSON = """
         {
             "title": "title",
+            "caseNumber": 100,
             "description": "description",
             "status": "status",
             "dueDateTime": "2025-04-30T12:00:00"

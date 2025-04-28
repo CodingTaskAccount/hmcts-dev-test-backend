@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +22,9 @@ public class Task {
     private long id;
 
     @Column(nullable = false)
+    private long caseNumber;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = true)
@@ -28,6 +32,9 @@ public class Task {
 
     @Column(nullable = false)
     private String status;
+
+    @Column(nullable = false)
+    private LocalDate createdDate;
 
     @Column(nullable = false)
     private LocalDateTime dueDateTime;

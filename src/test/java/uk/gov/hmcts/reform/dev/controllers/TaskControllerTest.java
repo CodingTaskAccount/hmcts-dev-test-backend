@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.dev.dto.TaskResponse;
 import uk.gov.hmcts.reform.dev.excpetions.TaskNotFoundException;
 import uk.gov.hmcts.reform.dev.services.TaskService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,11 @@ public class TaskControllerTest
     private TaskController underTest;
 
     private long id;
+    private long caseNumber;
     private String title;
     private String description;
     private String status;
+    private LocalDate createdDate;
     private LocalDateTime dueDateTime;
 
     private TaskResponse testResponse;
@@ -40,16 +43,20 @@ public class TaskControllerTest
     @BeforeEach
     void setUp() {
         id = 1;
+        caseNumber = 100;
         title = "test title";
         description = "test description";
         status = "test status";
+        createdDate = LocalDate.now();
         dueDateTime = LocalDateTime.now();
 
         testResponse = TaskResponse.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(title)
             .description(description)
             .status(status)
+            .createdDate(createdDate)
             .dueDateTime(dueDateTime)
             .build();
     }
@@ -59,6 +66,7 @@ public class TaskControllerTest
 
         CreateTaskRequest testRequest = CreateTaskRequest.builder()
             .title(title)
+            .caseNumber(caseNumber)
             .description(description)
             .status(status)
             .dueDateTime(dueDateTime)

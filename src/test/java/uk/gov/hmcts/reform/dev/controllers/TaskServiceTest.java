@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,11 @@ public class TaskServiceTest {
     private TaskRepository taskRepository;
 
     private long id;
+    private long caseNumber;
     private String title;
     private String description;
     private String status;
+    private LocalDate createdDate;
     private LocalDateTime dueDateTime;
 
     private TaskResponse testResponse;
@@ -45,16 +48,20 @@ public class TaskServiceTest {
     @BeforeEach
     void setUp() {
         id = 1;
+        caseNumber = 100;
         title = "test title";
         description = "test description";
         status = "test status";
+        createdDate = LocalDate.now();
         dueDateTime = LocalDateTime.now();
 
         testResponse = TaskResponse.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(title)
             .description(description)
             .status(status)
+            .createdDate(createdDate)
             .dueDateTime(dueDateTime)
             .build();
     }
@@ -64,6 +71,7 @@ public class TaskServiceTest {
 
         CreateTaskRequest createTaskRequest = CreateTaskRequest.builder()
             .title(title)
+            .caseNumber(caseNumber)
             .description(description)
             .status(status)
             .dueDateTime(dueDateTime)
@@ -71,16 +79,20 @@ public class TaskServiceTest {
 
         Task createdTask = Task.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(createTaskRequest.getTitle())
             .description(createTaskRequest.getDescription())
             .status(createTaskRequest.getStatus())
+            .createdDate(createdDate)
             .dueDateTime(createTaskRequest.getDueDateTime())
             .build();
 
         when(taskRepository.save(argThat(
-                task -> task.getTitle().equals(title) &&
+                task -> task.getCaseNumber() == caseNumber &&
+                    task.getTitle().equals(title) &&
                 task.getDescription().equals(description) &&
                 task.getStatus() == status &&
+                    task.getCreatedDate().equals(createdDate) &&
                 task.getDueDateTime().equals(dueDateTime)
         ))).thenReturn(createdTask);
 
@@ -88,9 +100,11 @@ public class TaskServiceTest {
 
         assertEquals(testResponse, response);
         verify(taskRepository).save(argThat(
-            task -> task.getTitle().equals(title) &&
+            task -> task.getCaseNumber() == caseNumber &&
+                task.getTitle().equals(title) &&
             task.getDescription().equals(description) &&
             task.getStatus() == status &&
+                task.getCreatedDate().equals(createdDate) &&
             task.getDueDateTime().equals(dueDateTime)
         ));
     }
@@ -100,9 +114,11 @@ public class TaskServiceTest {
 
         Task task = Task.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(title)
             .description(description)
             .status(status)
+            .createdDate(createdDate)
             .dueDateTime(dueDateTime)
             .build();
 
@@ -118,9 +134,11 @@ public class TaskServiceTest {
 
         Task task = Task.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(title)
             .description(description)
             .status(status)
+            .createdDate(createdDate)
             .dueDateTime(dueDateTime)
             .build();
 
@@ -138,9 +156,11 @@ public class TaskServiceTest {
 
         Task task = Task.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(title)
             .description(description)
             .status(status)
+            .createdDate(createdDate)
             .dueDateTime(dueDateTime)
             .build();
 
@@ -159,9 +179,11 @@ public class TaskServiceTest {
 
         Task task = Task.builder()
             .id(id)
+            .caseNumber(caseNumber)
             .title(title)
             .description(description)
             .status(status)
+            .createdDate(createdDate)
             .dueDateTime(dueDateTime)
             .build();
 

@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 public class CreateTaskRequest {
 
+    public long caseNumber;
+
     @NotNull
     public String title;
 

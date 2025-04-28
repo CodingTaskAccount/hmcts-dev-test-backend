@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.dev.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,6 +13,8 @@ public class TaskResponse {
 
     public long id;
 
+    public long caseNumber;
+
     @NonNull
     public String title;
 
@@ -19,6 +22,9 @@ public class TaskResponse {
 
     @NonNull
     public String status;
+
+    @NonNull
+    public LocalDate createdDate;
 
     @NonNull
     public LocalDateTime dueDateTime;
