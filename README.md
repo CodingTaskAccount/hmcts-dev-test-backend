@@ -1,10 +1,54 @@
-# HMCTS Dev Test Backend
-This will be the backend for the brand new HMCTS case management system. As a potential candidate we are leaving
-this in your hands. Please refer to the brief for the complete list of tasks! Complete as much as you can and be
-as creative as you want.
+# HMCTS Task Management Backend
 
-You should be able to run `./gradlew build` to start with to ensure it builds successfully. Then from that you
-can run the service in IntelliJ (or your IDE of choice) or however you normally would.
+This project uses a PostgreSQL database running on `localhost` with the following configuration, as defined in `application.properties`:
 
-There is an example endpoint provided to retrieve an example of a case. You are free to add/remove fields as you
-wish.
+Port = 5432
+Username = postgres
+Password = postgres
+
+## API Endpoints
+
+### Create Task
+**POST** `/create`
+
+- **Request Body** (JSON):
+  ```json
+  {
+    "title": "Task Title",
+    "description": "Task Description",
+    "status": "TODO",
+    "dueDateTime": "2025-05-01T14:30:00"
+  }
+Response (200 OK) with the created task if successful. 
+
+### Retrieve Task by ID
+**GET** `/retrieve/{id}`
+
+Path Variable: id (long)
+
+Response (200 OK) with the task object if ID is found in the database
+Error: 404 Not Found if ID is not present
+
+### Retrieve All Tasks
+**GET** /retrieveAllTasks
+
+Response (200 OK) with a json list of all tasks
+Returns an empty list if no tasks are found.
+
+### Update Task Status
+**PATCH** /update/{id}?status={status}
+
+Path Variable: id (long)
+
+Query Parameter: status (string)
+
+Response (200 OK) with the newly updated task object if successsful
+Error: 404 Not Found if ID is not present
+
+### Delete Task
+**DELETE** /delete/{id}
+
+Path Variable: id (long)
+
+Response (200 OK) with the ID if deleted successfully 
+Error: 404 Not Found if ID is not present
